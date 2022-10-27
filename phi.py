@@ -21,10 +21,9 @@ def compute_phi(LIMIT: int):# -> list[int]:
     LIMIT = int(LIMIT)
 
     # As we will work with successive "divisions", we need to initialize everything at n
-    # Small optimization : already divide every even number by 2 to avoir doing the longest inner loop
-    sieve = [n if n % 2 == 1 else n // 2 for n in range(LIMIT)]
+    sieve = [n for n in range(LIMIT)]
 
-    for n in range(3, LIMIT):
+    for n in range(2, LIMIT):
         # If the sieve is still at its initial value, n is prime
         if sieve[n] != n:
             continue
