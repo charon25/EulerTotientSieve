@@ -6,6 +6,15 @@ DEFAULT_LIMIT = 100000
 def compute_phi(LIMIT: int):# -> list[int]:
     """Compute phi(n) for all n in the interval [0, LIMIT) as a list, with the convention phi(0) = 0.
 
+    This works using the expression : phi(n) = n * Σ (1 - 1 / p) for every prime p dividing n
+    This can be rewritten phi(n) = n * Σ (p - 1) / p
+
+    Then, instead of computing "n by n", we compute "p by p" :
+    go through every number n, and if it is prime, we go through every multiple k*n (k > 1) and multiply the sieve value by (n - 1) / n.
+    To avoid dealing with float numbers, we int divide sieve[k*n] by n (as it should be a multiple), and then multiply by (n - 1).
+
+    We we went through every number n, we in particular went through every prime number < LIMIT, and so we must have computed phi(n) for every n.
+
     Args:
         limit (_type_): Exclusive upper limit of the range.
     """
