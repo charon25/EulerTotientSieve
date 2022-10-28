@@ -44,4 +44,7 @@ if __name__ == '__main__':
     except Exception:
         limit = DEFAULT_LIMIT
 
-    compute_phi(10000000)
+    phi_values = compute_phi(limit)
+
+    with open(f'phi_values_{limit}.txt', 'w') as fo:
+        fo.write("\n".join(map(str, phi_values)))
