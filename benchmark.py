@@ -1,22 +1,27 @@
 import json
 import sys
 import time
+from typing import Callable
 from tqdm import trange
 
 from phi import compute_phi
 
 DEFAULT_LIMIT = 1000000
-MAX_TEN_POWER = 7
-
+MAX_TEN_POWER = 8
 
 def naive_method(LIMIT):
     from math import gcd
 
-    return [1 + sum(1 for k in range(2, n) if gcd(k, n) == 1) for n in range(1, LIMIT)]
+    # For every number n, count how many k (2 <= k < n) are prime with n
+    # We can exclude n as it is never prime with itself if > 1
+    # We also exclude 1 by always adding 1 to the count (as 1 is prime with every number)
+    return [1 + len([1 for k in range(2, n) if gcd(k, n) == 1]) for n in range(1, LIMIT)]
 
 def prime_factors_method(LIMIT):
     phi = []
 
+    # Same principle as the sieve, but for only one number n
+    # Go through all its prime factors p, and successively multiply n by (p - 1) / p
     for n in range(1, LIMIT):
         phi_n = n
         divisor = 2
@@ -45,7 +50,7 @@ def benchmark_one(LIMIT):
     print(f'- Average time : {1e3 * sum(times) / len(times):.1f} ms')
 
 
-def benchmark_method(method):
+def benchmark_method(method: Callable):
     results = {}
 
     try:
@@ -55,7 +60,7 @@ def benchmark_method(method):
                 times = []
                 for _ in trange(10, leave=False, desc=f"M,E=({multiplier},{ten_power})"):
                     start_time = time.perf_counter()
-                    compute_phi(LIMIT)
+                    method(LIMIT)
                     stop_time = time.perf_counter()
                     times.append(stop_time - start_time)
 
@@ -63,7 +68,7 @@ def benchmark_method(method):
     except KeyboardInterrupt:
         pass
     
-    with open(f'benchmark_{method.__name__}.json', 'w') as fo:
+    with open(f'not_git\\benchmark_{method.__name__}.json', 'w') as fo:
         json.dump(results, fo)
 
 
